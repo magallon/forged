@@ -17,6 +17,7 @@ version: 1.0.0
 |:------|:----------------------|
 | **Siempre** | `AGENTS.md` en la raíz — reglas de código del proyecto |
 | Implementando una feature | `docs/SPEC.md` — requerimientos funcionales, reglas de negocio |
+| Antes de crear componentes | `docs/skill/references/codebase-map.md` — qué ya existe en el proyecto |
 | Necesitas saber qué sigue | `docs/ROADMAP.md` — fases, prioridades, dependencias |
 | Auditando código | `docs/audits/TEMPLATE.md` — plantilla y proceso TRIBUNAL |
 | Contexto general del proyecto | `docs/skill/references/` — documentación bajo demanda |
@@ -29,6 +30,7 @@ version: 1.0.0
 <!-- Reemplaza con las reglas irrompibles de tu proyecto.
      Estas se cargan en cada sesión — mantenlas cortas y críticas. -->
 
+- Nunca reimplementar un componente, hook o utilidad que ya existe en el proyecto sin verificar primero en `references/codebase-map.md`
 - {Ej. Nunca eliminar datos físicamente — siempre deshabilitación lógica}
 - {Ej. Nunca exponer API keys en el código fuente}
 - {Ej. Nunca modificar código en producción directamente}
@@ -52,7 +54,8 @@ Cuando completes una fase o sesión de trabajo:
 1. Actualizar `docs/ROADMAP.md` — marcar la fase como completada
 2. Registrar la sesión en `docs/PROGRESS.md`
 3. Si hay nuevos requerimientos, actualizar `docs/SPEC.md`
-4. Si creaste documentación de referencia, agregarla a `docs/skill/references/`
+4. Si creaste componentes, hooks o utilidades nuevas, actualizar `docs/skill/references/codebase-map.md`
+5. Si creaste documentación de referencia, agregarla a `docs/skill/references/`
 
 ---
 

@@ -58,6 +58,8 @@ TEAM.md documenta para cada modelo: sus fortalezas, sus limitaciones, qué tarea
 
 La IA implementa. El humano supervisa. Todo se registra en `docs/PROGRESS.md`.
 
+**Reutilización antes que reimplementación.** Cada agente de IA empieza sin contexto de lo que ya existe en el codebase. Esto produce un patrón destructivo: la IA crea componentes, hooks y utilidades que ya existen en el proyecto. Para evitarlo, FORGE recomienda mantener un mapa del codebase en `docs/skill/references/codebase-map.md` — un inventario breve de los módulos, componentes reutilizables, hooks y utilidades que ya existen, con su ubicación. La IA consulta este archivo antes de implementar y solo crea algo nuevo si no existe ya. Al final de cada sesión, la IA actualiza el mapa con lo que creó.
+
 Cada sesión de trabajo se registra con: fecha, qué se hizo, decisiones técnicas tomadas, y resultado de validación (build, tests). Cuando una sesión involucra una auditoría TRIBUNAL, PROGRESS.md la referencia con un enlace a la bitácora en lugar de duplicar el contenido:
 
 ```markdown
@@ -102,11 +104,17 @@ Tres archivos con propósitos distintos que no deben confundirse:
 
 Para que las IAs auto-descubran la skill sin intervención del humano, se crea un symlink desde la ubicación de skills de la herramienta hacia el directorio de la skill en el proyecto:
 
+**Linux / Mac:**
 ```bash
 ln -s /ruta/mi-proyecto/docs/skill /mnt/skills/user/mi-proyecto
 ```
 
-Esto es recomendado pero no obligatorio. No todos los entornos soportan symlinks igual (Windows vs Linux/Mac) y no todas las herramientas buscan skills en la misma ubicación. En entornos sin auto-descubrimiento, el prompt de arranque en el README sirve como fallback.
+**Windows** (requiere modo desarrollador activado o ejecutar como administrador):
+```cmd
+mklink /D C:\Users\tu-usuario\.skills\mi-proyecto C:\ruta\mi-proyecto\docs\skill
+```
+
+Esto es recomendado pero no obligatorio. No todas las herramientas buscan skills en la misma ubicación. En entornos sin auto-descubrimiento, el prompt de arranque en el README sirve como fallback.
 
 La ventaja del symlink: una sola fuente de verdad. Si actualizas la skill en el repo, la herramienta ve los cambios inmediatamente. Sin duplicación, sin sincronización manual.
 
