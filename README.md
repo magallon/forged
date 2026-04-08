@@ -80,6 +80,8 @@ Le pides a una IA que llene `SPEC.md` basándose en tu documento de requerimient
 
 Empiezas a construir. Asignas las fases del roadmap a los modelos según TEAM.md — siempre el más barato que pueda completar la tarea. La IA escribe código, tú supervisas, y registras cada sesión en `PROGRESS.md`. Fase por fase, vas construyendo el proyecto.
 
+Cada agente de IA empieza sin contexto de lo que ya existe en el codebase, lo que produce un patrón destructivo: reimplementar componentes, hooks y utilidades que ya existen. Para evitarlo, FORGE recomienda mantener un inventario breve en `docs/skill/references/codebase-map.md` que la IA consulta antes de crear algo nuevo y actualiza al final de cada sesión.
+
 ### 4. Auditoría (sobre código que ya existe)
 
 Cuando terminas un componente sensible (autenticación, pagos, permisos) o sospechas que la IA cometió errores, activas TRIBUNAL. Abres otra sesión con otro modelo como **Checker**, le pasas el código ya escrito y le pides que lo audite. El Checker produce hallazgos. Luego otro modelo como **Maker** implementa o rechaza las correcciones con justificación técnica.
