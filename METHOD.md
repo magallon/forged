@@ -16,6 +16,121 @@ FORGE formaliza esta dinámica en un proceso reproducible.
 
 ---
 
+## Arranque de un Proyecto Nuevo
+
+Esta sección describe paso a paso cómo iniciar un proyecto desde cero con FORGE. Antes de escribir la primera línea de código, los documentos fundacionales deben estar llenos. Esto toma entre 1 y 2 sesiones con una IA capaz.
+
+### Paso 0 — Preparar la estructura
+
+Clona el repositorio de FORGE y copia los archivos a tu proyecto:
+
+```bash
+# Clonar FORGE
+git clone https://github.com/tu-org/forge.git
+
+# Copiar los templates a tu proyecto
+cp -r forge/project/ mi-proyecto/docs/
+cp -r forge/scripts/ mi-proyecto/
+
+# Crear el symlink para auto-descubrimiento de la skill
+# Linux / Mac:
+ln -s /ruta/mi-proyecto/docs/skill /mnt/skills/user/mi-proyecto
+# Windows (modo desarrollador o administrador):
+mklink /D C:\Users\tu-usuario\.skills\mi-proyecto C:\ruta\mi-proyecto\docs\skill
+```
+
+Después de este paso, tu proyecto tiene la estructura completa de FORGE con todos los templates vacíos listos para llenar.
+
+### Paso 1 — Llenar SPEC.md
+
+Este es el documento más importante del proyecto. Todo lo demás se deriva de aquí. No avances al paso 2 hasta que SPEC.md refleje exactamente lo que quieres construir.
+
+Abre una sesión con una IA capaz de razonamiento profundo (Opus, Gemini Pro, o equivalente). Si tienes un documento de requerimientos, brief de producto, notas de reuniones, o cualquier fuente que describa lo que quieres construir, pásaselo a la IA junto con el template de SPEC.md.
+
+Ejemplo de prompt:
+
+```
+Lee el template en docs/SPEC.md y el documento de requerimientos que te adjunto.
+Llena SPEC.md siguiendo el formato exacto del template:
+- Descripción general del proyecto en un párrafo
+- Qué es / Qué no es
+- Un bloque de Módulo por cada componente del sistema, con RFs numerados,
+  reglas de negocio y exclusiones
+- Las reglas irrompibles del proyecto
+
+No inventes requerimientos que no estén en el documento fuente.
+Si hay ambigüedad, pregúntame antes de asumir.
+```
+
+Revisa el resultado con cuidado. Corrige, ajusta, agrega lo que falte. Haz tantas iteraciones como necesites. Un SPEC mal escrito produce implementaciones que hay que re-hacer — el tiempo invertido aquí se ahorra multiplicado después.
+
+### Paso 2 — Llenar TEAM.md
+
+Define con qué modelos de IA vas a trabajar. En la misma sesión o en una nueva, dile a la IA qué modelos tienes disponibles y pídele que investigue sus especificaciones.
+
+Ejemplo de prompt:
+
+```
+Lee el template en docs/TEAM.md.
+Voy a trabajar con estos modelos: [lista tus modelos].
+Para cada uno, investiga: contexto máximo, velocidad aproximada,
+precio por token (input y output), fortalezas principales y limitaciones conocidas.
+Llena TEAM.md con la información. Incluye la tabla de comparación rápida
+y la sección de costos IA vs Humano con salarios de [tu región].
+```
+
+Revisa los datos. Ajusta las secciones de "Asignar" y "Nunca asignar" basándote en tu experiencia real con cada modelo. Los benchmarks y specs públicos son una referencia, pero tu experiencia directa vale más.
+
+### Paso 3 — Llenar ROADMAP.md
+
+Toma el SPEC.md y descompónlo en fases de trabajo con orden y dependencias. Esto define qué se construye primero y qué depende de qué.
+
+Ejemplo de prompt:
+
+```
+Lee docs/SPEC.md y docs/ROADMAP.md.
+Descompón la especificación en fases de implementación.
+Para cada fase define: nombre descriptivo, duración estimada,
+qué fases deben completarse antes (dependencias), y prioridad.
+Ordena de mayor a menor prioridad.
+Las fases con dependencias no resueltas no pueden empezar.
+```
+
+Revisa el orden. Tú decides las prioridades — la IA propone pero el humano define qué es urgente vs qué puede esperar. Valida que las dependencias tengan sentido. Si una fase dice "depende de Fase 3" pero realmente podría empezar en paralelo, corrígelo.
+
+### Paso 4 — Llenar SKILL.md y references
+
+Abre docs/skill/SKILL.md y llena las secciones específicas de tu proyecto:
+
+**Prohibiciones absolutas:** Las reglas que ningún agente puede violar jamás. Piensa en qué errores serían catastróficos si una IA los cometiera. "Nunca eliminar datos físicamente", "nunca hacer deploy a producción sin aprobación", "nunca exponer API keys en el código".
+
+**Comandos obligatorios:** Los comandos de validación que toda IA debe correr después de cambiar código. Son específicos de tu stack: `npm run build && npm test`, `ruff . && pytest`, o lo que aplique.
+
+**Referencias:** Crea los archivos de referencia que tu proyecto necesite en `docs/skill/references/`. Como mínimo:
+
+- `handbook.md` — si ya tienes claro la visión y arquitectura general, llénalo. Si no, créalo cuando lo tengas.
+- `tech-stack.md` — si ya decidiste el stack técnico, documéntalo con las razones de cada decisión. La IA futura necesita saber *por qué* se eligió cada tecnología para no proponer cambiarla.
+- `business.md` — si tu proyecto tiene modelo de negocio, planes, pricing o políticas comerciales, documéntalo para que las IAs lo respeten al implementar.
+- `codebase-map.md` — empieza vacío. Se llena conforme construyes. Cada sesión que cree componentes nuevos debe actualizar este archivo.
+
+### Paso 5 — Escribir AGENTS.md
+
+Crea `AGENTS.md` en la raíz de tu repositorio con las reglas de código del proyecto. Este archivo no es un template de FORGE — lo escribes tú porque cada proyecto es radicalmente diferente.
+
+Incluye: convenciones de sintaxis (ES modules, async/await, nomenclatura), arquitectura de módulos (estructura de directorios, dónde va cada cosa), comandos de build, test y deploy, manejo de errores, reglas de seguridad, y cualquier convención que toda IA deba seguir al escribir código.
+
+Si aún no tienes el stack definido, escribe las reglas que ya sepas y completa el resto cuando hagas el scaffolding del proyecto.
+
+### Paso 6 — Empezar a construir
+
+Con SPEC, TEAM, ROADMAP, SKILL y AGENTS llenos, estás listo. Toma la primera fase del ROADMAP, consulta TEAM.md para elegir el modelo más barato que pueda completarla, abre una sesión y empieza a ejecutar.
+
+A partir de aquí, el flujo de 5 pasos se repite para cada tarea: especificar (ya está en SPEC), planificar (ya está en ROADMAP), asignar (consultar TEAM), ejecutar (la IA trabaja, registrar en PROGRESS), y auditar (si el componente lo amerita, activar TRIBUNAL).
+
+`FORGE.md` no se toca — ya viene con las reglas del método y funciona tal cual.
+
+---
+
 ## El Flujo de 5 Pasos
 
 ```
@@ -138,13 +253,66 @@ Cada proyecto define su umbral de poda. FORGE sugiere la práctica, no prescribe
 
 FORGE sugiere una sola métrica: **porcentaje de tareas que pasan sin retrabajo**.
 
-Se calcula desde dos fuentes:
-- El Ledger de TRIBUNAL: auditorías que llegaron a `validated` sin pasar por `blocked` vs las que sí pasaron por `blocked` antes.
-- PROGRESS.md: fases o sesiones que se registraron como completadas sin necesidad de re-ejecución.
+### Qué mide
 
-Esta métrica indica si los modelos están bien asignados (un modelo inadecuado produce retrabajo), si el SPEC está bien escrito (ambigüedad produce implementaciones incorrectas), y si el proceso de auditoría es efectivo (un buen Checker reduce retrabajo del Maker).
+Si una tarea se completa a la primera sin necesidad de rehacerla, el proceso funcionó. Si hay que rehacerla, algo falló: el spec era ambiguo, el modelo asignado no era capaz, o la implementación tenía errores que no se detectaron a tiempo. Esta métrica te dice qué tan bien está funcionando tu proceso como un todo.
 
-No se requiere tooling para calcularla — es un conteo manual que se revisa periódicamente.
+### Cómo calcularla
+
+La métrica se saca manualmente de dos fuentes que ya existen en tu proyecto:
+
+**Fuente 1 — El Ledger de TRIBUNAL (`docs/audits/README.md`):**
+
+Abre el Ledger y cuenta:
+- Auditorías que llegaron a `validated` directo = tareas exitosas
+- Auditorías que pasaron por `blocked` antes de llegar a `validated` = retrabajo
+
+```
+Ejemplo: 10 auditorías totales, 8 validated directo, 2 pasaron por blocked
+Tasa TRIBUNAL = 8 ÷ 10 = 80%
+```
+
+**Fuente 2 — PROGRESS.md:**
+
+Revisa el diario del proyecto y cuenta:
+- Fases o sesiones registradas como completadas a la primera = tareas exitosas
+- Fases que tuvieron que rehacerse, corregirse o volver a ejecutarse = retrabajo
+
+```
+Ejemplo: 20 fases totales, 17 completadas a la primera, 3 rehechas
+Tasa PROGRESS = 17 ÷ 20 = 85%
+```
+
+**Tasa combinada:** Promedia ambas fuentes para obtener tu porcentaje general. Si solo usas una fuente (por ejemplo, no todas las tareas pasan por TRIBUNAL), usa esa sola.
+
+### Cuándo revisarla
+
+No hay frecuencia obligatoria. Opciones razonables: al final de cada semana de trabajo, cuando el Judge haga su revisión periódica de lote, o al cerrar un hito importante del ROADMAP.
+
+### Qué te dice el resultado
+
+Si el porcentaje es alto (>85%), el proceso está funcionando bien: los modelos están bien asignados, el SPEC es claro, y las auditorías detectan problemas a tiempo.
+
+Si el porcentaje es bajo (<70%), algo falla y puedes diagnosticar qué:
+- ¿Las tareas que fallaron usaban un modelo barato para algo complejo? → TEAM.md necesita ajustes en la asignación.
+- ¿La IA implementó algo diferente a lo pedido? → SPEC.md tiene ambigüedades que corregir.
+- ¿Las auditorías detectan muchos problemas graves? → El modelo que construyó no es confiable para ese tipo de tarea.
+- ¿El Maker pasa por `blocked` frecuentemente? → O el Checker infla severidades, o el Maker no valida antes de declarar implementado.
+
+### Dónde registrarla
+
+No existe un archivo dedicado para la métrica. Regístrala como una entrada periódica en PROGRESS.md:
+
+```markdown
+## Revisión de métricas — 2025-08-01
+
+Período: Julio 2025
+- Auditorías: 12 total, 10 validated directo, 2 con blocked → 83%
+- Fases ROADMAP: 8 completadas, 7 a la primera, 1 rehecha → 87%
+- Tasa combinada: 85%
+- Diagnóstico: La fase rehecha (Auth) usó Flash para lógica compleja.
+  Ajuste: asignar mínimo Sonnet para módulos de autenticación.
+```
 
 ---
 
