@@ -6,17 +6,17 @@
 
 ---
 
-FORGE es un framework de proceso para construir software donde un humano dirige un equipo de agentes de IA como desarrolladores principales. No es una librería, no es un CLI, no es un plugin. Es un conjunto de convenciones, templates y estructura de carpetas que establece cómo organizar un proyecto, especificar qué se va a construir, asignar trabajo a los modelos correctos por costo mínimo, registrar el progreso, y asegurar la calidad del código producido.
+FORGE es un método de desarrollo estructurado donde un humano dirige un equipo de agentes de IA para construir software. El trabajo se define completamente antes de ejecutarse, se divide en unidades explícitas, se asigna al modelo de menor costo que pueda completarlo, se ejecuta con supervisión humana, y se verifica mediante revisión inter-agente. Todo queda documentado y es trazable.
 
-Se instala copiando archivos a tu repositorio. Funciona con cualquier lenguaje, cualquier framework, cualquier modelo de IA.
+No es una librería, no es un CLI, no es un plugin. Es un conjunto de convenciones, templates y estructura de carpetas. Se instala copiando archivos a tu repositorio. Funciona con cualquier lenguaje, cualquier framework, cualquier modelo de IA.
 
 ---
 
 ## El Problema
 
-Cuando un humano trabaja con IA para construir software, enfrenta problemas recurrentes: las IAs no tienen contexto del proyecto entre sesiones, no saben qué priorizar ni qué reglas seguir, producen código que nadie revisa con rigor, y el humano pierde tiempo repitiendo contexto en cada conversación. Si además usa múltiples modelos — unos baratos para tareas simples, otros caros para tareas complejas — no hay sistema para decidir cuál usar ni para rastrear qué hizo cada uno.
+El desarrollo de software con IA es caótico y no reproducible. Las IAs no tienen contexto del proyecto entre sesiones, no saben qué priorizar ni qué reglas seguir, producen código que nadie revisa con rigor, y el humano pierde tiempo repitiendo contexto en cada conversación. La IA se usa como "chat", no como parte de un sistema de trabajo. Si además se usan múltiples modelos — unos baratos para tareas simples, otros caros para tareas complejas — no hay sistema para decidir cuál usar ni para rastrear qué hizo cada uno.
 
-FORGE resuelve esto con una estructura de documentación que actúa como memoria persistente del proyecto, un catálogo de agentes con regla de asignación por costo mínimo, y un sistema de revisión de calidad (TRIBUNAL) donde ningún agente evalúa su propio trabajo.
+FORGE introduce orden: planificación completa antes de construir, descomposición explícita del trabajo, ejecución guiada por estructura, asignación por costo mínimo, y seguimiento formal del progreso. Incluye TRIBUNAL como módulo de calidad donde ningún agente evalúa su propio trabajo.
 
 ---
 
