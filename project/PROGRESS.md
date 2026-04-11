@@ -50,4 +50,29 @@ Bitácora: [docs/audits/security-audit-20250715.md](audits/security-audit-202507
 
 ---
 
+## Revisión de métricas — {YYYY-MM-DD}
+
+<!-- EJEMPLO de revisión periódica de la métrica de FORGE.
+     Registra una entrada como esta cada semana, cada mes, 
+     o cada vez que el Judge revise un lote de auditorías.
+     Ver METHOD.md sección "Medición" para detalle de cómo calcularla. -->
+
+**Período:** {Ej. Julio 2025}
+
+| Fuente | Total | Exitosas | Con retrabajo | Tasa |
+|:-------|:------|:---------|:--------------|:-----|
+| Auditorías (Ledger) | 10 | 8 validated directo | 2 pasaron por blocked | 80% |
+| Fases (ROADMAP) | 20 | 17 a la primera | 3 rehechas | 85% |
+| **Combinada** | | | | **82%** |
+
+**Diagnóstico:**
+- {Ej. La fase rehecha (Auth) usó Flash para lógica compleja → asignar mínimo Sonnet para módulos de autenticación}
+- {Ej. 2 auditorías blocked por duplicación de código → reforzar verificación de integridad}
+
+**Ajustes:**
+- {Ej. Actualizar TEAM.md: Flash no apto para módulos con lógica de permisos}
+- {Ej. Agregar prohibición en SKILL.md sobre módulos de auth}
+
+---
+
 <!-- FORGE v1.0 — Diario del Proyecto -->

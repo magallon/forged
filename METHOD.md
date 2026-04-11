@@ -263,7 +263,15 @@ La métrica se saca manualmente de dos fuentes que ya existen en tu proyecto:
 
 **Fuente 1 — El Ledger de TRIBUNAL (`docs/audits/README.md`):**
 
-Abre el Ledger y cuenta:
+El Ledger es un índice auto-generado de todas las auditorías. No existe hasta que lo generas por primera vez. Después de completar tu primera auditoría, ejecuta:
+
+```bash
+node scripts/tribunal/update-reviews.js
+```
+
+Esto lee el YAML de cada auditoría en `docs/audits/` y genera `docs/audits/README.md` con tablas de estado, validación y veredictos. Córrelo cada vez que completes una auditoría, o configúralo como hook de git para que se actualice automáticamente (ver [PROTOCOL.md](docs/PROTOCOL.md) para integración CI/CD).
+
+Una vez generado, abre el Ledger y cuenta:
 - Auditorías que llegaron a `validated` directo = tareas exitosas
 - Auditorías que pasaron por `blocked` antes de llegar a `validated` = retrabajo
 
@@ -301,7 +309,7 @@ Si el porcentaje es bajo (<70%), algo falla y puedes diagnosticar qué:
 
 ### Dónde registrarla
 
-No existe un archivo dedicado para la métrica. Regístrala como una entrada periódica en PROGRESS.md:
+Regístrala como una entrada periódica en PROGRESS.md, que ya incluye una sección de ejemplo para revisión de métricas:
 
 ```markdown
 ## Revisión de métricas — 2025-08-01
