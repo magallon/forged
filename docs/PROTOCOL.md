@@ -23,7 +23,7 @@ TRIBUNAL opera en dos niveles distintos:
 El ciclo estándar de toda auditoría. Dos roles, dos agentes o sesiones distintas, un artefacto Markdown compartido. Este ciclo es autocontenido y puede repetirse múltiples veces dentro del proyecto.
 
 ```
-┌────────────────┐                ┌────────────────┐
+┌──────────────── ┐                ┌────────────────┐
 │    CHECKER      │    Reporte    │     MAKER       │
 │   (Auditor)     │──────────────▸│   (Ejecutor)    │
 │                 │  de hallazgos │                  │

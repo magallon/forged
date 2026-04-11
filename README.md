@@ -48,7 +48,12 @@ cp -r forge/project/ mi-proyecto/docs/
 cp -r forge/scripts/ mi-proyecto/
 
 # 2. (Recomendado) Crea el symlink para auto-descubrimiento de la skill
+
+# Linux / Mac:
 ln -s /ruta/mi-proyecto/docs/skill /mnt/skills/user/mi-proyecto
+
+# Windows (requiere modo desarrollador activado o permisos de administrador):
+mklink /D C:\Users\tu-usuario\.skills\mi-proyecto C:\ruta\mi-proyecto\docs\skill
 ```
 
 Luego llena los documentos en `docs/` con la información de tu proyecto: tu especificación en SPEC.md, tu equipo de modelos en TEAM.md, tu plan en ROADMAP.md, y las reglas de tu proyecto en skill/SKILL.md.
@@ -66,34 +71,6 @@ Dime qué necesitas para empezar.
 
 ---
 
-## Cómo se Usa en la Práctica
-
-### 1. Arranque
-
-Clonas FORGE, copias `project/` a tu `docs/`, copias `scripts/` a tu raíz, y opcionalmente creas el symlink. Creas `AGENTS.md` en la raíz de tu repo con las reglas de código de tu proyecto.
-
-### 2. Especificación y Planificación
-
-Le pides a una IA que llene `SPEC.md` basándose en tu documento de requerimientos. Luego llenas `TEAM.md` con los modelos que vas a usar y construyes `ROADMAP.md` descomponiendo el SPEC en fases con dependencias.
-
-### 3. Ejecución
-
-Empiezas a construir. Asignas las fases del roadmap a los modelos según TEAM.md — siempre el más barato que pueda completar la tarea. La IA escribe código, tú supervisas, y registras cada sesión en `PROGRESS.md`. Fase por fase, vas construyendo el proyecto.
-
-Cada agente de IA empieza sin contexto de lo que ya existe en el codebase, lo que produce un patrón destructivo: reimplementar componentes, hooks y utilidades que ya existen. Para evitarlo, FORGE recomienda mantener un inventario breve en `docs/skill/references/codebase-map.md` que la IA consulta antes de crear algo nuevo y actualiza al final de cada sesión.
-
-### 4. Auditoría (sobre código que ya existe)
-
-Cuando terminas un componente sensible (autenticación, pagos, permisos) o sospechas que la IA cometió errores, activas TRIBUNAL. Abres otra sesión con otro modelo como **Checker**, le pasas el código ya escrito y le pides que lo audite. El Checker produce hallazgos. Luego otro modelo como **Maker** implementa o rechaza las correcciones con justificación técnica.
-
-Las auditorías no se crean por adelantado del roadmap. El roadmap te dice qué construir; las auditorías te dicen si lo construido está bien.
-
-### 5. Gobernanza (el Judge)
-
-Después de 5–10 auditorías completadas, activas al **Judge** — un modelo frontera que revisa el lote, califica al Checker y al Maker, detecta patrones y emite directrices para futuras sesiones.
-
----
-
 ## Estructura del Proyecto
 
 Después de instalar FORGE, tu proyecto queda así:
@@ -101,23 +78,28 @@ Después de instalar FORGE, tu proyecto queda así:
 ```
 mi-proyecto/
 ├── docs/
-│   ├── FORGE.md                     # Manifiesto: "este proyecto usa FORGE"
+│   ├── FORGE.md                     # Manifiesto del método
 │   ├── SPEC.md                      # Especificación de requerimientos
 │   ├── TEAM.md                      # Catálogo de agentes IA + costos
-│   ├── PROGRESS.md                  # Diario del proyecto
+│   ├── PROGRESS.md                  # Diario del proyecto + métricas
 │   ├── ROADMAP.md                   # Plan de hitos y prioridades
 │   ├── skill/
-│   │   ├── SKILL.md                 # Reglas irrompibles (auto-descubrible)
-│   │   └── references/              # Documentación bajo demanda
+│   │   ├── SKILL.md                 # Router operativo para IAs
+│   │   └── references/
+│   │       ├── README.md            # Guía de qué documentar aquí
+│   │       ├── codebase-map.md      # Inventario de componentes existentes
+│   │       ├── handbook.md          # Visión, arquitectura, historia
+│   │       ├── business.md          # Modelo de negocio, pricing, políticas
+│   │       └── tech-stack.md        # Stack técnico, infraestructura
 │   └── audits/
 │       ├── TEMPLATE.md              # Plantilla de auditoría TRIBUNAL
 │       ├── README.md                # Índice de auditorías (auto-generado)
 │       └── *.md                     # Auditorías individuales
 ├── src/                             # Tu código
-├── AGENTS.md                        # Reglas de código (lo escribe el usuario)
+├── AGENTS.md                        # Reglas de código del proyecto
 └── scripts/
     └── tribunal/
-        └── update-reviews.js        # Genera el índice de auditorías (opcional)
+        └── update-reviews.js        # Genera el índice de auditorías
 ```
 
 ---
@@ -126,15 +108,15 @@ mi-proyecto/
 
 | Documento | Propósito |
 |:----------|:----------|
-| **FORGE.md** | Manifiesto del método. Le dice a cualquier IA que el proyecto usa FORGE y resume las reglas del proceso. |
-| **SPEC.md** | Especificación de requerimientos. Define qué se construye, módulo por módulo, sin ambigüedad. |
-| **TEAM.md** | Catálogo de agentes IA. Fortalezas, limitaciones, costos y regla de asignación por costo mínimo. |
-| **PROGRESS.md** | Diario del proyecto. Registro cronológico de sesiones, cambios y decisiones técnicas. |
-| **ROADMAP.md** | Plan de hitos. Qué falta, en qué orden, con qué dependencias. |
-| **skill/SKILL.md** | Router operativo. Archivo corto que las IAs cargan siempre y que las dirige al documento correcto según la tarea. |
-| **skill/references/** | Documentación bajo demanda. Las IAs consultan estos archivos solo cuando necesitan información específica. |
-| **audits/TEMPLATE.md** | Plantilla de auditoría TRIBUNAL. Se copia para cada nueva auditoría. Instrucciones por rol embebidas. |
-| **AGENTS.md** | Reglas de código del proyecto. Convenciones, arquitectura, comandos. Lo escribe el usuario en la raíz del repo. |
+| **FORGE.md** | Manifiesto del método. Declara que el proyecto usa FORGE, resume los principios, el flujo operativo y las reglas de TRIBUNAL. |
+| **SPEC.md** | Especificación de requerimientos. Define qué se construye, módulo por módulo, con requerimientos funcionales numerados, reglas de negocio y exclusiones. |
+| **TEAM.md** | Catálogo de agentes IA. Documenta fortalezas, limitaciones, costos de cada modelo y la regla de asignación por costo mínimo. Incluye comparativa de costos IA vs humano. |
+| **PROGRESS.md** | Diario del proyecto. Registro cronológico de sesiones de trabajo, decisiones técnicas, referencias cruzadas a auditorías, y revisiones periódicas de la métrica de retrabajo. |
+| **ROADMAP.md** | Plan de hitos. Qué falta por construir, en qué orden, con qué dependencias y prioridades. Las features futuras van aquí como fases de baja prioridad. |
+| **skill/SKILL.md** | Router operativo. Archivo corto que las IAs cargan siempre al abrir el proyecto. Contiene la tabla de consulta (qué archivo leer según la tarea), prohibiciones absolutas y comandos obligatorios. |
+| **skill/references/** | Documentación bajo demanda. Contiene el mapa del codebase (inventario de componentes existentes para prevenir reimplementación), handbook del proyecto, modelo de negocio y stack técnico. Las IAs consultan estos archivos solo cuando necesitan información específica. |
+| **audits/TEMPLATE.md** | Plantilla de auditoría TRIBUNAL. Se copia para cada nueva auditoría. Contiene el YAML v2.0, instrucciones embebidas por rol (Checker, Maker, Judge) y tablas de disposición. |
+| **AGENTS.md** | Reglas de código del proyecto. Convenciones de sintaxis, arquitectura de módulos, comandos de build/test. Lo escribe el usuario en la raíz del repositorio — cada proyecto es diferente. |
 
 ---
 
@@ -190,7 +172,9 @@ No es necesario para scripts rápidos, proyectos triviales de un solo archivo, o
 
 ## Métrica
 
-FORGE sugiere una sola métrica: **porcentaje de tareas que pasan sin retrabajo**. Se deriva del índice de auditorías (auditorías `validated` a la primera vs las que pasaron por `blocked`) y del diario del proyecto (fases que se re-hicieron). Simple, accionable, y no requiere tooling adicional.
+FORGE sugiere una sola métrica: **porcentaje de tareas que pasan sin retrabajo**. Se calcula desde dos fuentes: el Ledger de TRIBUNAL (auditorías `validated` a la primera vs las que pasaron por `blocked`) y PROGRESS.md (fases completadas sin necesidad de rehacerlas). Un porcentaje alto indica que los modelos están bien asignados, el SPEC es claro y el proceso de auditoría funciona. Un porcentaje bajo señala dónde ajustar: asignación de modelos, claridad del spec o rigor de validación. Se registra periódicamente en PROGRESS.md.
+
+**[→ Ver cómo calcularla paso a paso](METHOD.md#medición)**
 
 ---
 
