@@ -3,11 +3,13 @@
 <!-- ================================================================
      INSTRUCCIONES:
      1. Registra cada sesión de trabajo como una entrada cronológica
+        — CLI: forge session close  (crea la entrada automáticamente desde git status)
      2. Mantén la tabla resumen actualizada
      3. Cuando una sesión involucre una auditoría TRIBUNAL, referénciala
         con un enlace en lugar de duplicar el contenido
      4. Poda periódicamente: mueve sesiones antiguas a
         skill/references/progress-archive.md para mantener este archivo ligero
+        — CLI: forge prune progress  (archiva automáticamente, con --dry-run para previsualizar)
      ================================================================ -->
 
 ## Resumen de Sesiones

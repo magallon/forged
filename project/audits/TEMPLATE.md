@@ -56,12 +56,19 @@ judge:
      TRIBUNAL Protocol v2.0 — Plantilla de Revisión Inter-Agente
      
      FLUJO OPERATIVO:
-     1. Copia este archivo como: [tipo]-audit-[YYYYMMDD].md
+     1. Crear auditoría
+        — CLI:    forge audit new [tipo]  (crea, nombra y pre-rellena el archivo)
+        — Manual: copiar este archivo como [tipo]-audit-[YYYYMMDD].md
      2. Checker (Auditor): Rellena la sección de Hallazgos
+        — CLI:    forge audit start [archivo]  (muestra estado y campos faltantes)
+        — Al terminar: actualizar status → "audited"
      3. Maker (Ejecutor): Implementa, valida, rellena Tabla de Disposición
+        — CLI:    forge audit validate [archivo]  (verifica coherencia antes de cambiar status)
+        — Al terminar: actualizar status → "validated" | "blocked"
      
      GOBERNANZA PERIÓDICA:
      4. Judge (Juez): Revisa esta auditoría como parte de un lote
+        — CLI:    forge tribunal batch  (cuenta auditorías pendientes de revisión)
      
      REGLA FUNDAMENTAL: Cada fase es ejecutada por un agente/sesión
      DISTINTO. Ningún agente evalúa su propio trabajo.

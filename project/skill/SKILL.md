@@ -21,7 +21,7 @@ version: 1.0.0
 | Necesitas saber qué sigue | `docs/ROADMAP.md` — fases, prioridades, dependencias |
 | Auditando código | `docs/audits/TEMPLATE.md` — plantilla y proceso TRIBUNAL |
 | Contexto general del proyecto | `docs/skill/references/` — documentación bajo demanda |
-| Reglas del método de trabajo | `docs/FORGE.md` — principios, flujo, TRIBUNAL |
+| Reglas del método de trabajo | `docs/FORGE.md` — principios, flujo, TRIBUNAL y comandos CLI |
 
 ---
 
@@ -52,7 +52,7 @@ Ejecuta siempre después de cambiar código:
 
 Cuando completes una fase o sesión de trabajo:
 1. Actualizar `docs/ROADMAP.md` — marcar la fase como completada
-2. Registrar la sesión en `docs/PROGRESS.md`
+2. Registrar la sesión en `docs/PROGRESS.md` — o ejecuta `forge session close` si el CLI está disponible
 3. Si hay nuevos requerimientos, actualizar `docs/SPEC.md`
 4. Si creaste componentes, hooks o utilidades nuevas, actualizar `docs/skill/references/codebase-map.md`
 5. Si creaste documentación de referencia, agregarla a `docs/skill/references/`

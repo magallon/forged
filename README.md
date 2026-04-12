@@ -8,7 +8,7 @@
 
 FORGE es un método de desarrollo estructurado donde un humano dirige un equipo de agentes de IA para construir software. El trabajo se define completamente antes de ejecutarse, se divide en unidades explícitas, se asigna al modelo de menor costo que pueda completarlo, se ejecuta con supervisión humana, y se verifica mediante revisión inter-agente. Todo queda documentado y es trazable.
 
-No es una librería, no es un CLI, no es un plugin. Es un conjunto de convenciones, templates y estructura de carpetas. Se instala copiando archivos a tu repositorio. Funciona con cualquier lenguaje, cualquier framework, cualquier modelo de IA.
+No es una librería, no es un plugin. Es un conjunto de convenciones, templates y estructura de carpetas. Se instala copiando archivos a tu repositorio. Funciona con cualquier lenguaje, cualquier framework, cualquier modelo de IA.
 
 ---
 
@@ -42,13 +42,30 @@ FORGE opera en 5 pasos. No todos aplican en cada tarea — un fix trivial no nec
 
 ## Inicio Rápido
 
+**Opción A — con CLI (recomendado):**
+
 ```bash
-# 1. Copia los archivos de FORGE a tu proyecto
-cp -r forge/project/ mi-proyecto/docs/
+npm install -g @forge-method/cli   # Node.js >= 18 requerido
+
+cd mi-proyecto
+forge init
+forge doctor   # verifica que la estructura quedó completa
+```
+
+**Opción B — copia manual:**
+
+```bash
+# 1. Copia los templates y el script a tu proyecto
+cp -r forge/project/. mi-proyecto/docs/
 cp -r forge/scripts/ mi-proyecto/
 
-# 2. (Recomendado) Crea el symlink para auto-descubrimiento de la skill
+# 2. Genera el índice de auditorías vacío
+node mi-proyecto/scripts/tribunal/update-reviews.js
+```
 
+**Symlink para auto-descubrimiento de la skill (opcional, recomendado):**
+
+```bash
 # Linux / Mac:
 ln -s /ruta/mi-proyecto/docs/skill /mnt/skills/user/mi-proyecto
 
@@ -67,13 +84,52 @@ Revisa docs/ROADMAP.md para ver la prioridad actual.
 Dime qué necesitas para empezar.
 ```
 
-**[→ Ver un proyecto de ejemplo con todos los documentos llenos](examples/)**
+**[→ Ver ejemplo de auditoría TRIBUNAL completa](examples/)**
 
 ---
 
-## Estructura del Proyecto
+## Estructura del Repositorio FORGE
 
-Después de instalar FORGE, tu proyecto queda así:
+```
+forged/                              ← Este repositorio
+├── project/                         # Templates que forge init copia al proyecto
+│   ├── FORGE.md
+│   ├── SPEC.md
+│   ├── TEAM.md
+│   ├── PROGRESS.md
+│   ├── ROADMAP.md
+│   ├── skill/
+│   │   ├── SKILL.md
+│   │   └── references/              # codebase-map, handbook, business, tech-stack
+│   └── audits/
+│       └── TEMPLATE.md
+├── cli/                             # CLI @forge-method/cli (Node.js >= 18)
+│   ├── bin/forge.js
+│   ├── package.json
+│   └── src/
+│       ├── commands/                # init, doctor, audit, tribunal, session, ledger, status, prune
+│       └── utils/                   # args, yaml, fs-utils, confirm, date, ledger-core
+├── scripts/
+│   └── tribunal/
+│       └── update-reviews.js        # Genera el Ledger sin necesidad de instalar el CLI
+├── docs/
+│   ├── PROTOCOL.md                  # Protocolo TRIBUNAL completo
+│   ├── PROGRESS.md                  # Bitácora de desarrollo del propio repo FORGE
+│   └── skill/
+│       └── references/
+│           └── codebase-map.md      # Mapa del CLI (codebase del propio repo)
+├── examples/
+│   └── security-audit-20250715.md   # Ejemplo de auditoría TRIBUNAL completada
+├── CLI.md                           # Referencia completa de comandos
+├── METHOD.md                        # Metodología completa
+└── README.md
+```
+
+---
+
+## Estructura del Proyecto (después de instalar)
+
+Después de `forge init`, tu proyecto queda así:
 
 ```
 mi-proyecto/
@@ -93,13 +149,13 @@ mi-proyecto/
 │   │       └── tech-stack.md        # Stack técnico, infraestructura
 │   └── audits/
 │       ├── TEMPLATE.md              # Plantilla de auditoría TRIBUNAL
-│       ├── README.md                # Índice de auditorías (auto-generado)
+│       ├── README.md                # Ledger — índice generado automáticamente
 │       └── *.md                     # Auditorías individuales
-├── src/                             # Tu código
-├── AGENTS.md                        # Reglas de código del proyecto
-└── scripts/
-    └── tribunal/
-        └── update-reviews.js        # Genera el índice de auditorías
+├── scripts/
+│   └── tribunal/
+│       └── update-reviews.js        # Genera el Ledger (alternativa al CLI)
+├── src/                             # Tu código — no lo toca FORGE
+└── AGENTS.md                        # Lo creas tú — convenciones de código del proyecto
 ```
 
 ---
@@ -116,6 +172,7 @@ mi-proyecto/
 | **skill/SKILL.md** | Router operativo. Archivo corto que las IAs cargan siempre al abrir el proyecto. Contiene la tabla de consulta (qué archivo leer según la tarea), prohibiciones absolutas y comandos obligatorios. |
 | **skill/references/** | Documentación bajo demanda. Contiene el mapa del codebase (inventario de componentes existentes para prevenir reimplementación), handbook del proyecto, modelo de negocio y stack técnico. Las IAs consultan estos archivos solo cuando necesitan información específica. |
 | **audits/TEMPLATE.md** | Plantilla de auditoría TRIBUNAL. Se copia para cada nueva auditoría. Contiene el YAML v2.0, instrucciones embebidas por rol (Checker, Maker, Judge) y tablas de disposición. |
+| **audits/README.md** | Ledger de auditorías. Índice generado automáticamente por `forge ledger` o `update-reviews.js`. Tabla de todas las auditorías con estado, veredicto y trazabilidad. |
 | **AGENTS.md** | Reglas de código del proyecto. Convenciones de sintaxis, arquitectura de módulos, comandos de build/test. Lo escribe el usuario en la raíz del repositorio — cada proyecto es diferente. |
 
 ---
@@ -166,13 +223,15 @@ No es necesario para scripts rápidos, proyectos triviales de un solo archivo, o
 | **IDE / Herramienta** | Cursor, Windsurf, Cline, OpenCode, Claude Code, chat web, API directa, o terminal. |
 | **Hosting** | GitHub, GitLab, Bitbucket, o cualquier repositorio Git. |
 
-**Dependencias:** Ninguna. FORGE son archivos Markdown planos. Opcionalmente, Node.js ≥ 16 para el script del índice de auditorías.
+**Dependencias:** Ninguna. FORGE son archivos Markdown planos. Opcionalmente, Node.js ≥ 16 para `update-reviews.js`. El CLI requiere Node.js ≥ 18.
 
 ---
 
 ## Métrica
 
 FORGE sugiere una sola métrica: **porcentaje de tareas que pasan sin retrabajo**. Se calcula desde dos fuentes: el Ledger de TRIBUNAL (auditorías `validated` a la primera vs las que pasaron por `blocked`) y PROGRESS.md (fases completadas sin necesidad de rehacerlas). Un porcentaje alto indica que los modelos están bien asignados, el SPEC es claro y el proceso de auditoría funciona. Un porcentaje bajo señala dónde ajustar: asignación de modelos, claridad del spec o rigor de validación. Se registra periódicamente en PROGRESS.md.
+
+Con el CLI instalado, `forge status` calcula y muestra la tasa combinada directamente.
 
 **[→ Ver cómo calcularla paso a paso](METHOD.md#medición)**
 

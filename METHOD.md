@@ -22,24 +22,41 @@ Esta sección describe paso a paso cómo iniciar un proyecto desde cero con FORG
 
 ### Paso 0 — Preparar la estructura
 
-Clona el repositorio de FORGE y copia los archivos a tu proyecto:
+**Opción A — con CLI (recomendado):**
+
+```bash
+npm install -g @forge-method/cli   # Node.js >= 18
+
+cd mi-proyecto
+forge init
+```
+
+`forge init` copia los templates, genera el Ledger inicial y muestra un resumen de lo que creó. Si el directorio ya tiene contenido, pide confirmación antes de sobrescribir.
+
+**Opción B — copia manual:**
 
 ```bash
 # Clonar FORGE
 git clone https://github.com/tu-org/forge.git
 
-# Copiar los templates a tu proyecto
-cp -r forge/project/ mi-proyecto/docs/
+# Copiar los templates y el script a tu proyecto
+cp -r forge/project/. mi-proyecto/docs/
 cp -r forge/scripts/ mi-proyecto/
 
-# Crear el symlink para auto-descubrimiento de la skill
+# Generar el Ledger inicial
+node mi-proyecto/scripts/tribunal/update-reviews.js
+```
+
+**Symlink para auto-descubrimiento de la skill (opcional, recomendado):**
+
+```bash
 # Linux / Mac:
 ln -s /ruta/mi-proyecto/docs/skill /mnt/skills/user/mi-proyecto
 # Windows (modo desarrollador o administrador):
 mklink /D C:\Users\tu-usuario\.skills\mi-proyecto C:\ruta\mi-proyecto\docs\skill
 ```
 
-Después de este paso, tu proyecto tiene la estructura completa de FORGE con todos los templates vacíos listos para llenar.
+Después de este paso, tu proyecto tiene la estructura completa de FORGE con todos los templates vacíos listos para llenar. Ejecuta `forge doctor` para verificar que todo esté en orden.
 
 ### Paso 1 — Llenar SPEC.md
 
@@ -175,7 +192,7 @@ La IA implementa. El humano supervisa. Todo se registra en `docs/PROGRESS.md`.
 
 **Reutilización antes que reimplementación.** Cada agente de IA empieza sin contexto de lo que ya existe en el codebase. Esto produce un patrón destructivo: la IA crea componentes, hooks y utilidades que ya existen en el proyecto. Para evitarlo, FORGE recomienda mantener un mapa del codebase en `docs/skill/references/codebase-map.md` — un inventario breve de los módulos, componentes reutilizables, hooks y utilidades que ya existen, con su ubicación. La IA consulta este archivo antes de implementar y solo crea algo nuevo si no existe ya. Al final de cada sesión, la IA actualiza el mapa con lo que creó.
 
-Cada sesión de trabajo se registra con: fecha, qué se hizo, decisiones técnicas tomadas, y resultado de validación (build, tests). Cuando una sesión involucra una auditoría TRIBUNAL, PROGRESS.md la referencia con un enlace a la bitácora en lugar de duplicar el contenido:
+Cada sesión de trabajo se registra con: fecha, qué se hizo, decisiones técnicas tomadas, y resultado de validación (build, tests). Si el CLI está disponible, `forge session close` crea la entrada automáticamente desde los archivos modificados en git — útil como punto de partida que luego el humano completa con decisiones técnicas y contexto. Cuando una sesión involucra una auditoría TRIBUNAL, PROGRESS.md la referencia con un enlace a la bitácora en lugar de duplicar el contenido:
 
 ```markdown
 ## Sesión 2025-07-16 — Auditoría de seguridad PaymentForm
@@ -239,7 +256,7 @@ La ventaja del symlink: una sola fuente de verdad. Si actualizas la skill en el 
 
 Los documentos que crecen con el tiempo — especialmente PROGRESS.md y ROADMAP.md — deben mantenerse compactos. Si una IA carga un PROGRESS.md de 500 líneas para cambiar un botón, está desperdiciando ventana de contexto y arriesgando que el modelo olvide instrucciones clave.
 
-**PROGRESS.md:** Mantener solo las últimas sesiones activas. Las sesiones anteriores se mueven a `references/progress-archive.md`. Así el diario siempre es ligero y la IA solo ve lo reciente y relevante.
+**PROGRESS.md:** Mantener solo las últimas sesiones activas. Las sesiones anteriores se mueven a `references/progress-archive.md`. Si el CLI está disponible, `forge prune progress` automatiza este proceso — previsualiza con `--dry-run` antes de ejecutar. Así el diario siempre es ligero y la IA solo ve lo reciente y relevante.
 
 **ROADMAP.md:** Mantener solo las fases activas y las inmediatas siguientes. Las fases completadas se marcan como tales, pero si el archivo crece demasiado, las fases antiguas se pueden archivar.
 
@@ -259,17 +276,27 @@ Si una tarea se completa a la primera sin necesidad de rehacerla, el proceso fun
 
 ### Cómo calcularla
 
-La métrica se saca manualmente de dos fuentes que ya existen en tu proyecto:
+**Con CLI** — cálculo automatizado (recomendado si está instalado):
+
+```bash
+forge status            # últimos 28 días
+forge status --period 7d   # período personalizado
+```
+
+`forge status` lee el Ledger y PROGRESS.md, calcula la tasa de cada fuente y muestra la tasa combinada con un indicador visual respecto al umbral del 85%.
+
+**Sin CLI** — cálculo manual desde dos fuentes:
 
 **Fuente 1 — El Ledger de TRIBUNAL (`docs/audits/README.md`):**
 
-El Ledger es un índice auto-generado de todas las auditorías. No existe hasta que lo generas por primera vez. Después de completar tu primera auditoría, ejecuta:
+El Ledger es un índice auto-generado de todas las auditorías. Genera o actualiza el Ledger con:
 
 ```bash
-node scripts/tribunal/update-reviews.js
+forge ledger                            # con CLI
+node scripts/tribunal/update-reviews.js   # sin CLI (Node.js >= 16)
 ```
 
-Esto lee el YAML de cada auditoría en `docs/audits/` y genera `docs/audits/README.md` con tablas de estado, validación y veredictos. Córrelo cada vez que completes una auditoría, o configúralo como hook de git para que se actualice automáticamente (ver [PROTOCOL.md](docs/PROTOCOL.md) para integración CI/CD).
+Córrelo cada vez que completes una auditoría, o configúralo como hook de git para que se actualice automáticamente (ver [PROTOCOL.md](docs/PROTOCOL.md) para integración CI/CD).
 
 Una vez generado, abre el Ledger y cuenta:
 - Auditorías que llegaron a `validated` directo = tareas exitosas
@@ -309,7 +336,7 @@ Si el porcentaje es bajo (<70%), algo falla y puedes diagnosticar qué:
 
 ### Dónde registrarla
 
-Regístrala como una entrada periódica en PROGRESS.md, que ya incluye una sección de ejemplo para revisión de métricas:
+`forge status` muestra la tasa en pantalla pero no la persiste — es una vista de solo lectura. Registra el resultado como una entrada periódica en PROGRESS.md, que ya incluye una sección de ejemplo para revisión de métricas:
 
 ```markdown
 ## Revisión de métricas — 2025-08-01

@@ -74,4 +74,25 @@ Si un hallazgo rechazado por el Maker reaparece en un segundo ciclo de auditorí
 
 ---
 
+## CLI — Comandos Operativos
+
+Si `@forge-method/cli` está disponible, úsalo en lugar de operar archivos manualmente:
+
+| Tarea | Comando | Alternativa manual |
+|:------|:--------|:-------------------|
+| Verificar estructura del proyecto | `forge doctor` | Inspección manual |
+| Crear nueva auditoría | `forge audit new [tipo]` | Copiar `audits/TEMPLATE.md` |
+| Ver estado y siguiente fase | `forge audit start [archivo]` | Leer el YAML del archivo |
+| Validar coherencia YAML | `forge audit validate [archivo]` | Contar hallazgos manualmente |
+| Regenerar Ledger | `forge ledger` | `node scripts/tribunal/update-reviews.js` |
+| Registrar sesión de trabajo | `forge session close` | Editar `PROGRESS.md` manualmente |
+| Métrica de retrabajo | `forge status` | Calcular desde Ledger + PROGRESS.md |
+| Archivar sesiones antiguas | `forge prune progress` | Mover bloques manualmente |
+
+Tipos de auditoría disponibles: `security` · `perf` · `a11y` · `arch` · `refactor`
+
+Verificar instalación: `forge --version`
+
+---
+
 <!-- FORGE v1.0 — Manifiesto del Método -->

@@ -6,13 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 FORGE is a **process framework** (not a library/CLI/plugin) for orchestrating AI agents to build software under human direction. It consists of Markdown templates, conventions, and a folder structure that projects copy into their repos. It is language-, framework-, and model-agnostic.
 
+It also ships a CLI (`@forge-method/cli`) that automates file creation and reporting tasks.
+
 ## Repository Structure
 
-- `Project/` — Template files that users copy into their projects (`SPEC.md`, `TEAM.md`, `ROADMAP.md`, `PROGRESS.md`, `FORGE.md`, `skill/SKILL.md`, `audits/TEMPLATE.md`)
+- `project/` — Template files that users copy into their projects (`SPEC.md`, `TEAM.md`, `ROADMAP.md`, `PROGRESS.md`, `FORGE.md`, `skill/SKILL.md`, `audits/TEMPLATE.md`)
 - `docs/PROTOCOL.md` — Full TRIBUNAL QA protocol documentation
-- `scripts/tribunal/update-reviews.js` — Zero-dependency Node.js script that generates the audit ledger (`README.md`) from YAML frontmatter in audit files
+- `scripts/tribunal/update-reviews.js` — Zero-dependency Node.js script that generates the audit ledger (`docs/audits/README.md`) from YAML frontmatter in audit files
 - `examples/` — Example filled-out audit files
 - `METHOD.md` — Complete methodology documentation
+- `CLI.md` — Full CLI reference (`forge` commands)
 - `README.md` — Project pitch and quick-start guide
 
 ## Key Concepts
@@ -33,17 +36,43 @@ FORGE is a **process framework** (not a library/CLI/plugin) for orchestrating AI
 - `FORGE.md` — method manifesto (how work is done)
 - `AGENTS.md` — code rules (project-specific conventions, written by the user, lives at repo root)
 
-## Scripts
+## CLI (forge commands)
+
+Install globally (requires Node.js >= 18):
 
 ```bash
-# Generate the audit ledger index from YAML frontmatter in audit files
+npm install -g @forge-method/cli
+```
+
+### Common commands
+
+```bash
+forge init                        # Bootstrap full FORGE structure in a project
+forge doctor                      # Check structure completeness and unfilled placeholders
+forge audit new [tipo]            # Create a new audit file (tipos: security | perf | a11y | arch | refactor)
+forge audit start [archivo]       # Show current audit phase and missing YAML fields
+forge audit validate [archivo]    # Verify YAML coherence before changing status (also useful in CI)
+forge tribunal batch              # Count validated audits pending Judge review
+forge session close               # Create a partial PROGRESS.md entry from git-tracked changes
+forge ledger                      # Regenerate docs/audits/README.md from YAML frontmatter
+forge ledger --watch              # Regenerate on every file change
+forge status                      # Show the rework metric (target: ≥85%)
+forge prune progress              # Archive old sessions from PROGRESS.md
+```
+
+All action commands show a preview and ask for confirmation before writing files. See `CLI.md` for flags and error codes.
+
+## Scripts (without CLI)
+
+```bash
+# Equivalent to `forge ledger` — no CLI installation required
 node scripts/tribunal/update-reviews.js
 
-# Watch mode — regenerates on file changes
+# Watch mode
 node scripts/tribunal/update-reviews.js --watch
 ```
 
-The script requires Node.js >= 16 and has zero external dependencies. It reads `docs/audits/*.md`, parses YAML frontmatter, and writes `docs/audits/README.md`.
+Requires Node.js >= 16, zero external dependencies. Reads `docs/audits/*.md`, writes `docs/audits/README.md`.
 
 ## Language
 

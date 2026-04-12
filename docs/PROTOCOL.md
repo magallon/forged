@@ -73,7 +73,7 @@ El Checker recibe un componente específico y una mira concreta (seguridad, rend
 - Busca problemas de integridad estructural: bloques duplicados, imports rotos, syntax errors. Estos son hallazgos tan válidos como los del dominio auditado.
 
 **Produce:** Reporte exhaustivo con hallazgos numerados y sugerencias de remediación.
-**Archivo:** `docs/audits/[tipo]-audit-[YYYYMMDD].md` (copia de `TEMPLATE.md`).
+**Archivo:** `docs/audits/[tipo]-audit-[YYYYMMDD].md` — crea con `forge audit new [tipo]` o copiando `TEMPLATE.md` manualmente.
 **Estado YAML al terminar:** `status: audited`.
 
 ### Maker (Ejecutor)
@@ -100,6 +100,7 @@ Si un cambio rompe el build, falla tests existentes, o introduce errores nuevos,
 
 **Produce:** Cambios en el código fuente + Tabla de Disposición + Registro de Validación.
 **Commit tag:** Referenciado en `executor.commit_ref`.
+**Antes de cambiar status:** ejecutar `forge audit validate [archivo]` para verificar coherencia del YAML.
 **Estado YAML al terminar:** `status: validated` (si el gate pasa) o `status: blocked` (si no pasa y no puede resolverlo).
 
 ### Judge (Juez)
@@ -148,21 +149,26 @@ draft → audited → validated → reviewed
 ## Estructura de Archivos
 
 ```
-proyecto/
-├── LLM.md                          # Puntero raíz para IAs
-├── AGENTS.md                        # Puntero para Cline/Windsurf/OpenCode
-├── .cursorrules                     # Puntero para Cursor IDE
+mi-proyecto/
+├── AGENTS.md                        # Reglas de código del proyecto (lo crea el usuario)
 ├── docs/
-│   └── reviews/
-│       ├── PROTOCOL.md              # Este documento
+│   ├── FORGE.md                     # Manifiesto del método
+│   ├── SPEC.md                      # Especificación de requerimientos
+│   ├── TEAM.md                      # Catálogo de agentes IA
+│   ├── PROGRESS.md                  # Diario del proyecto
+│   ├── ROADMAP.md                   # Plan de hitos
+│   ├── skill/
+│   │   ├── SKILL.md                 # Router operativo para IAs
+│   │   └── references/              # Documentación bajo demanda
+│   └── audits/
 │       ├── TEMPLATE.md              # Plantilla base (no editar directamente)
-│       ├── README.md                # Índice auto-generado (The Ledger)
+│       ├── README.md                # Ledger — índice auto-generado
 │       ├── security-audit-20250715.md
 │       ├── perf-audit-20250720.md
 │       └── ...
 └── scripts/
     └── tribunal/
-        └── update-reviews.js        # Script que genera el Ledger
+        └── update-reviews.js        # Script que genera el Ledger (sin CLI)
 ```
 
 ## Convenciones de Nombrado
@@ -197,15 +203,19 @@ Bitácora: [docs/audits/security-audit-20250715.md](docs/audits/security-audit-2
 
 ## El Ledger (Índice Automatizado)
 
-El script `scripts/tribunal/update-reviews.js` lee los campos YAML de cada archivo en `docs/audits/` y genera un `README.md` dinámico ordenado temporalmente.
+El Ledger (`docs/audits/README.md`) se genera automáticamente a partir del YAML frontmatter de cada auditoría. Dos formas de regenerarlo:
+
+**Con CLI** (recomendado si está instalado):
+
+```bash
+forge ledger           # genera una vez
+forge ledger --watch   # regenera al detectar cambios
+```
+
+**Sin CLI** (script standalone, requiere Node.js ≥ 16):
 
 ```bash
 node scripts/tribunal/update-reviews.js
-```
-
-Para modo watch (regenera automáticamente al detectar cambios):
-
-```bash
 node scripts/tribunal/update-reviews.js --watch
 ```
 
@@ -220,7 +230,7 @@ node scripts/tribunal/update-reviews.js
 git add docs/audits/README.md
 ```
 
-Ejemplo como GitHub Action:
+Ejemplo como GitHub Action (con validación de auditorías usando el CLI):
 
 ```yaml
 # .github/workflows/tribunal-ledger.yml
@@ -237,12 +247,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: node scripts/tribunal/update-reviews.js
+      - run: npm install -g @forge-method/cli
+      - run: FORGE_YES=1 forge ledger      # regenera el Ledger
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update TRIBUNAL ledger"
           file_pattern: docs/audits/README.md
 ```
+
+La variable `FORGE_YES=1` omite confirmaciones interactivas en entornos CI sin TTY.
 
 ---
 
