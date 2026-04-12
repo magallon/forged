@@ -1,10 +1,10 @@
 {
-  "name": "@forge-method/cli",
+  "name": "@magallon/forge",
   "version": "1.0.0",
   "description": "CLI oficial del método FORGE — orquestación de agentes IA para desarrollo de software",
   "author": "Christian Ramón Magallón García",
   "bin": {
-    "forge": "./bin/forge.js"
+    "forge": "bin/forge.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -12,7 +12,8 @@
   "files": [
     "bin/",
     "src/",
-    "templates/"
+    "templates/",
+    "scripts-bundle/"
   ],
   "keywords": [
     "forge",

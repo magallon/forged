@@ -18,7 +18,7 @@
 
 **Global (recomendado):**
 ```bash
-npm install -g @forge-method/cli
+npm install -g @magallon/forge
 ```
 
 Verifica que la instalación fue exitosa:
@@ -29,13 +29,13 @@ forge --version
 
 **Sin instalación global** — si prefieres no instalar globalmente, el CLI también puede correrse desde el directorio del proyecto usando npx:
 ```bash
-npx @forge-method/cli init
-npx @forge-method/cli doctor
+npx @magallon/forge init
+npx @magallon/forge doctor
 ```
 
 **Actualizar:**
 ```bash
-npm install -g @forge-method/cli@latest
+npm install -g @magallon/forge@latest
 ```
 
 ---

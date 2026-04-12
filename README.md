@@ -45,7 +45,7 @@ FORGE opera en 5 pasos. No todos aplican en cada tarea — un fix trivial no nec
 **Opción A — con CLI (recomendado):**
 
 ```bash
-npm install -g @forge-method/cli   # Node.js >= 18 requerido
+npm install -g @magallon/forge   # Node.js >= 18 requerido
 
 cd mi-proyecto
 forge init
@@ -103,7 +103,7 @@ forged/                              ← Este repositorio
 │   │   └── references/              # codebase-map, handbook, business, tech-stack
 │   └── audits/
 │       └── TEMPLATE.md
-├── cli/                             # CLI @forge-method/cli (Node.js >= 18)
+├── cli/                             # CLI @magallon/forge (Node.js >= 18)
 │   ├── bin/forge.js
 │   ├── package.json
 │   └── src/

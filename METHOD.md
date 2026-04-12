@@ -25,7 +25,7 @@ Esta sección describe paso a paso cómo iniciar un proyecto desde cero con FORG
 **Opción A — con CLI (recomendado):**
 
 ```bash
-npm install -g @forge-method/cli   # Node.js >= 18
+npm install -g @magallon/forge   # Node.js >= 18
 
 cd mi-proyecto
 forge init

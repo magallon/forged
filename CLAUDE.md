@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 FORGE is a **process framework** (not a library/CLI/plugin) for orchestrating AI agents to build software under human direction. It consists of Markdown templates, conventions, and a folder structure that projects copy into their repos. It is language-, framework-, and model-agnostic.
 
-It also ships a CLI (`@forge-method/cli`) that automates file creation and reporting tasks.
+It also ships a CLI (`@magallon/forge`) that automates file creation and reporting tasks.
 
 ## Repository Structure
 
@@ -41,7 +41,7 @@ It also ships a CLI (`@forge-method/cli`) that automates file creation and repor
 Install globally (requires Node.js >= 18):
 
 ```bash
-npm install -g @forge-method/cli
+npm install -g @magallon/forge
 ```
 
 ### Common commands
