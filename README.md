@@ -97,6 +97,7 @@ forged/                              ← Este repositorio
 │   ├── TEAM.md
 │   ├── PROGRESS.md
 │   ├── ROADMAP.md
+│   ├── PROTOCOL.md                  # Protocolo TRIBUNAL completo (se instala en docs/)
 │   ├── skill/
 │   │   ├── SKILL.md
 │   │   └── references/              # codebase-map, handbook, business, tech-stack
@@ -105,9 +106,11 @@ forged/                              ← Este repositorio
 ├── cli/                             # CLI @magallon/forge (Node.js >= 18)
 │   ├── bin/forge.js
 │   ├── package.json
-│   └── src/
-│       ├── commands/                # init, doctor, audit, tribunal, session, ledger, status, prune
-│       └── utils/                   # args, yaml, fs-utils, confirm, date, ledger-core
+│   ├── src/
+│   │   ├── commands/                # init, doctor, audit, tribunal, session, ledger, status, prune
+│   │   └── utils/                   # args, yaml, fs-utils, confirm, date, ledger-core
+│   ├── templates/                   # Copia de project/ bundleada para distribución npm
+│   └── scripts-bundle/              # Copia de scripts/ bundleada para distribución npm
 ├── scripts/
 │   └── tribunal/
 │       └── update-reviews.js        # Genera el Ledger sin necesidad de instalar el CLI
@@ -120,6 +123,7 @@ forged/                              ← Este repositorio
 │           └── codebase-map.md      # Mapa del CLI (codebase del propio repo)
 ├── examples/
 │   └── security-audit-20250715.md   # Ejemplo de auditoría TRIBUNAL completada
+├── CHANGELOG.md                     # Historial de versiones
 ├── CLI.md                           # Referencia completa de comandos
 ├── METHOD.md                        # Metodología completa
 └── README.md
@@ -142,6 +146,7 @@ mi-proyecto/
 │           └── tasks.md             # tareas atómicas por fases con trazabilidad
 ├── docs/
 │   ├── FORGE.md                     # Manifiesto del método
+│   ├── PROTOCOL.md                  # Protocolo TRIBUNAL completo
 │   ├── TEAM.md                      # Catálogo de agentes IA + costos
 │   ├── PROGRESS.md                  # Diario del proyecto + métricas
 │   ├── ROADMAP.md                   # Plan de hitos y prioridades
@@ -177,6 +182,7 @@ mi-proyecto/
 | **ROADMAP.md** | Plan de hitos. Qué falta por construir, en qué orden, con qué dependencias y prioridades. Las features futuras van aquí como fases de baja prioridad. |
 | **skill/SKILL.md** | Router operativo. Archivo corto que las IAs cargan siempre al abrir el proyecto. Contiene la tabla de consulta (qué archivo leer según la tarea), prohibiciones absolutas y comandos obligatorios. |
 | **skill/references/** | Documentación bajo demanda. Contiene el mapa del codebase (inventario de componentes existentes para prevenir reimplementación), handbook del proyecto, modelo de negocio y stack técnico. Las IAs consultan estos archivos solo cuando necesitan información específica. |
+| **PROTOCOL.md** | Protocolo TRIBUNAL completo. Reglas detalladas por rol (Checker, Maker, Judge), flujo de estados, guía de selección de modelos, reglas cardinales e integración CI/CD. |
 | **audits/TEMPLATE.md** | Plantilla de auditoría TRIBUNAL. Se copia para cada nueva auditoría. Contiene el YAML v2.0, instrucciones embebidas por rol (Checker, Maker, Judge) y tablas de disposición. |
 | **audits/README.md** | Ledger de auditorías. Índice generado automáticamente por `forge ledger` o `update-reviews.js`. Tabla de todas las auditorías con estado, veredicto y trazabilidad. |
 | **AGENTS.md** | Reglas de código del proyecto. Convenciones de sintaxis, arquitectura de módulos, comandos de build/test. Lo escribe el usuario en la raíz del repositorio — cada proyecto es diferente. |
@@ -268,5 +274,5 @@ MIT
 ---
 
 <p align="center">
-  <strong>FORGE v1.0</strong>
+  <strong>FORGE v1.1.0</strong>
 </p>
