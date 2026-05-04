@@ -57,7 +57,7 @@ Bitácora: [docs/audits/security-audit-20250715.md](audits/security-audit-202507
 <!-- EJEMPLO de revisión periódica de la métrica de FORGE.
      Registra una entrada como esta cada semana, cada mes, 
      o cada vez que el Judge revise un lote de auditorías.
-     Ver METHOD.md sección "Medición" para detalle de cómo calcularla. -->
+     Ejecuta `forge status` para calcularla automáticamente. -->
 
 **Período:** {Ej. Julio 2025}
 

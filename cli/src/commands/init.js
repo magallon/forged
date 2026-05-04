@@ -116,9 +116,9 @@ module.exports = async function init(argv) {
 
   console.log(`✅ Estructura FORGE creada exitosamente.\n`);
   console.log(`Siguientes pasos:`);
-  console.log(`  1. Llena docs/SPEC.md con los requerimientos de tu proyecto`);
-  console.log(`  2. Llena docs/TEAM.md con los modelos de IA que usarás`);
-  console.log(`  3. Llena docs/ROADMAP.md con las fases del proyecto`);
+  console.log(`  1. Llena docs/TEAM.md con los modelos de IA que usarás`);
+  console.log(`  2. Llena docs/ROADMAP.md con las fases del proyecto`);
+  console.log(`  3. Genera la Tríada Kiro (requirements.md + design.md + tasks.md) para cada fase con Kiro: https://kiro.dev/`);
   console.log(`  4. Crea AGENTS.md en la raíz con las reglas de código`);
   console.log(`  5. Ejecuta "forge doctor" para verificar que todo está en orden`);
 };

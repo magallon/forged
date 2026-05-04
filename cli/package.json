@@ -1,6 +1,6 @@
 {
   "name": "@magallon/forge",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CLI oficial del método FORGE — orquestación de agentes IA para desarrollo de software",
   "author": "Christian Ramón Magallón García",
   "bin": {

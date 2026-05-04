@@ -12,7 +12,7 @@ FORGE es un framework de proceso donde un humano dirige agentes de IA para const
 Especificar → Planificar → Asignar → Ejecutar → Auditar
 ```
 
-1. **Especificar:** Definir qué se construye sin ambigüedad → `SPEC.md`
+1. **Especificar:** Definir qué se construye sin ambigüedad → Tríada Kiro (`requirements.md` + `design.md` + `tasks.md`)
 2. **Planificar:** Descomponer en fases con orden y dependencias → `ROADMAP.md`
 3. **Asignar:** Elegir el modelo más barato que pueda completar la tarea → `TEAM.md`
 4. **Ejecutar:** La IA implementa, el humano supervisa, se registra → `PROGRESS.md`
@@ -64,7 +64,7 @@ Ningún agente evalúa su propio trabajo. El Checker no implementa. El Maker no 
 
 ### Referencia
 
-Para reglas completas por rol, ver las instrucciones embebidas en `audits/TEMPLATE.md`. Para documentación profunda del proceso, ver `PROTOCOL.md` en el repositorio de FORGE.
+Para reglas completas por rol, ver las instrucciones embebidas en `audits/TEMPLATE.md`. Para documentación profunda del proceso, ver `PROTOCOL.md` en este directorio.
 
 ---
 
@@ -92,6 +92,14 @@ Si `@magallon/forge` está disponible, úsalo en lugar de operar archivos manual
 Tipos de auditoría disponibles: `security` · `perf` · `a11y` · `arch` · `refactor`
 
 Verificar instalación: `forge --version`
+
+---
+
+## Orchestrator (Extensión Opcional)
+
+Para proyectos con múltiples fases complejas, FORGE incluye el rol de **Orchestrator**: una capa de meta-orquestación entre el Director y los agentes especializados. Convierte decisiones estratégicas en especificaciones ejecutables (Tríada Kiro por fase), genera prompts de contexto para cada agente, y administra el estado del proyecto.
+
+No forma parte del flujo base ni de TRIBUNAL. Documentación completa: `ORCHESTRATOR.md` en el repositorio de FORGE.
 
 ---
 

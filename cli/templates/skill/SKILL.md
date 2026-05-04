@@ -16,7 +16,7 @@ version: 1.0.0
 | Tarea | Archivo de referencia |
 |:------|:----------------------|
 | **Siempre** | `AGENTS.md` en la raíz — reglas de código del proyecto |
-| Implementando una feature | `docs/SPEC.md` — requerimientos funcionales, reglas de negocio |
+| Implementando una feature | `.kiro/specs/[feature]/requirements.md` — requerimientos funcionales, reglas de negocio |
 | Antes de crear componentes | `docs/skill/references/codebase-map.md` — qué ya existe en el proyecto |
 | Necesitas saber qué sigue | `docs/ROADMAP.md` — fases, prioridades, dependencias |
 | Auditando código | `docs/audits/TEMPLATE.md` — plantilla y proceso TRIBUNAL |
@@ -53,7 +53,7 @@ Ejecuta siempre después de cambiar código:
 Cuando completes una fase o sesión de trabajo:
 1. Actualizar `docs/ROADMAP.md` — marcar la fase como completada
 2. Registrar la sesión en `docs/PROGRESS.md` — o ejecuta `forge session close` si el CLI está disponible
-3. Si hay nuevos requerimientos, actualizar `docs/SPEC.md`
+3. Si hay nuevos requerimientos, actualizar `.kiro/specs/[feature]/requirements.md`
 4. Si creaste componentes, hooks o utilidades nuevas, actualizar `docs/skill/references/codebase-map.md`
 5. Si creaste documentación de referencia, agregarla a `docs/skill/references/`
 

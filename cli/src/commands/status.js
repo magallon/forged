@@ -112,7 +112,7 @@ module.exports = async function status(argv) {
     } else if (combinedRate >= 70) {
       console.log(`⚠️  Por debajo del ${THRESHOLD}% — revisar asignación de modelos en TEAM.md`);
     } else {
-      console.log(`❌ Por debajo del 70% — revisar SPEC.md (ambigüedades) y TEAM.md (asignación de modelos)`);
+      console.log(`❌ Por debajo del 70% — revisar requirements.md de las fases (ambigüedades) y TEAM.md (asignación de modelos)`);
     }
   } else {
     console.log(`\nℹ️  Sin datos suficientes para calcular la tasa combinada.`);

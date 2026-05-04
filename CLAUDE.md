@@ -10,8 +10,9 @@ It also ships a CLI (`@magallon/forge`) that automates file creation and reporti
 
 ## Repository Structure
 
-- `project/` — Template files that users copy into their projects (`SPEC.md`, `TEAM.md`, `ROADMAP.md`, `PROGRESS.md`, `FORGE.md`, `skill/SKILL.md`, `audits/TEMPLATE.md`)
+- `project/` — Template files that users copy into their projects (`TEAM.md`, `ROADMAP.md`, `PROGRESS.md`, `FORGE.md`, `skill/SKILL.md`, `audits/TEMPLATE.md`)
 - `docs/PROTOCOL.md` — Full TRIBUNAL QA protocol documentation
+- `docs/ORCHESTRATOR.md` — Optional Orchestrator role documentation (meta-layer above FORGE agents)
 - `scripts/tribunal/update-reviews.js` — Zero-dependency Node.js script that generates the audit ledger (`docs/audits/README.md`) from YAML frontmatter in audit files
 - `examples/` — Example filled-out audit files
 - `METHOD.md` — Complete methodology documentation
@@ -20,7 +21,7 @@ It also ships a CLI (`@magallon/forge`) that automates file creation and reporti
 
 ## Key Concepts
 
-**FORGE flow:** Especificar (SPEC) -> Planificar (ROADMAP) -> Asignar (TEAM) -> Ejecutar (PROGRESS) -> Auditar (TRIBUNAL)
+**FORGE flow:** Especificar (Kiro Triad) -> Planificar (ROADMAP) -> Asignar (TEAM) -> Ejecutar (PROGRESS) -> Auditar (TRIBUNAL)
 
 **TRIBUNAL** is the QA module with three independent roles:
 - **Checker** (Auditor): analyzes code, produces numbered findings (F-001, F-002...)
@@ -30,6 +31,8 @@ It also ships a CLI (`@magallon/forge`) that automates file creation and reporti
 **Audit states:** `draft -> audited -> validated | blocked -> reviewed`
 
 **Cardinal rule:** No agent evaluates its own work. Checker != Maker != Judge.
+
+**Orchestrator** (optional extension): meta-role above FORGE agents that handles requirements engineering (Kiro Triad: `requirements.md` + `design.md` + `tasks.md` per phase), scaffolding, prompt engineering, and flow control. Not part of TRIBUNAL. Documented in `docs/ORCHESTRATOR.md`. `requirements.md` per phase is the tactical specification; `ROADMAP.md` stays as strategic map.
 
 **Three distinct config files in target projects:**
 - `SKILL.md` — operational router ("I'm doing X, which file do I read?")

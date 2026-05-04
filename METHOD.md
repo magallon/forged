@@ -58,28 +58,21 @@ mklink /D C:\Users\tu-usuario\.skills\mi-proyecto C:\ruta\mi-proyecto\docs\skill
 
 Después de este paso, tu proyecto tiene la estructura completa de FORGE con todos los templates vacíos listos para llenar. Ejecuta `forge doctor` para verificar que todo esté en orden.
 
-### Paso 1 — Llenar SPEC.md
+### Paso 1 — Generar la especificación de requerimientos
 
-Este es el documento más importante del proyecto. Todo lo demás se deriva de aquí. No avances al paso 2 hasta que SPEC.md refleje exactamente lo que quieres construir.
+La especificación define exactamente qué se construye por fase. No avances a la implementación sin ella — la ambigüedad aquí produce retrabajo multiplicado.
 
-Abre una sesión con una IA capaz de razonamiento profundo (Opus, Gemini Pro, o equivalente). Si tienes un documento de requerimientos, brief de producto, notas de reuniones, o cualquier fuente que describa lo que quieres construir, pásaselo a la IA junto con el template de SPEC.md.
+La especificación vive en `.kiro/specs/[nombre-feature]/` como la **Tríada Kiro**: tres archivos que juntos definen qué, cómo y en qué tareas se divide el trabajo. La herramienta recomendada para generarla es **[Kiro](https://kiro.dev/)** — un IDE especializado en requirements engineering con lenguaje contractual (SHALL/MUST) y criterios BDD (Given/When/Then).
 
-Ejemplo de prompt:
+Si usas el Orchestrator, él genera la Tríada automáticamente. Si la escribes manualmente, los tres archivos son:
 
-```
-Lee el template en docs/SPEC.md y el documento de requerimientos que te adjunto.
-Llena SPEC.md siguiendo el formato exacto del template:
-- Descripción general del proyecto en un párrafo
-- Qué es / Qué no es
-- Un bloque de Módulo por cada componente del sistema, con RFs numerados,
-  reglas de negocio y exclusiones
-- Las reglas irrompibles del proyecto
+- `requirements.md` — User Story + requerimientos RFC 2119 (`THE System SHALL` / `SHALL NOT`) + Criterios de Aceptación GIVEN/WHEN/THEN
+- `design.md` — prescriptivo total: DDL exacto de base de datos, políticas RLS, estructura de componentes, y **Correctness Properties** (invariantes que ninguna implementación puede violar)
+- `tasks.md` — tareas atómicas agrupadas en fases (Infraestructura, Implementación, QA), cada una con referencia `_Requirements: X.X_`
 
-No inventes requerimientos que no estén en el documento fuente.
-Si hay ambigüedad, pregúntame antes de asumir.
-```
+Las carpetas siguen la convención `n<nivel>-<secuencia>-<slug>` (ej. `n1-00-autenticacion`, `n2-16-panel-admin`).
 
-Revisa el resultado con cuidado. Corrige, ajusta, agrega lo que falte. Haz tantas iteraciones como necesites. Un SPEC mal escrito produce implementaciones que hay que re-hacer — el tiempo invertido aquí se ahorra multiplicado después.
+No avances a la siguiente fase hasta que el Director haya revisado y aprobado los tres archivos.
 
 ### Paso 2 — Llenar TEAM.md
 
@@ -100,13 +93,13 @@ Revisa los datos. Ajusta las secciones de "Asignar" y "Nunca asignar" basándote
 
 ### Paso 3 — Llenar ROADMAP.md
 
-Toma el SPEC.md y descompónlo en fases de trabajo con orden y dependencias. Esto define qué se construye primero y qué depende de qué.
+Descompón el proyecto en fases con orden y dependencias. El ROADMAP es el mapa estratégico del proyecto — por cada fase, el Paso 1 generará su Tríada Kiro antes de ejecutar.
 
 Ejemplo de prompt:
 
 ```
-Lee docs/SPEC.md y docs/ROADMAP.md.
-Descompón la especificación en fases de implementación.
+Lee docs/ROADMAP.md y el brief del proyecto que te adjunto.
+Descompón el proyecto en fases de implementación.
 Para cada fase define: nombre descriptivo, duración estimada,
 qué fases deben completarse antes (dependencias), y prioridad.
 Ordena de mayor a menor prioridad.
@@ -140,9 +133,9 @@ Si aún no tienes el stack definido, escribe las reglas que ya sepas y completa 
 
 ### Paso 6 — Empezar a construir
 
-Con SPEC, TEAM, ROADMAP, SKILL y AGENTS llenos, estás listo. Toma la primera fase del ROADMAP, consulta TEAM.md para elegir el modelo más barato que pueda completarla, abre una sesión y empieza a ejecutar.
+Con TEAM, ROADMAP, SKILL y AGENTS listos, genera la Tríada Kiro para la primera fase, toma la primera tarea, consulta TEAM.md para elegir el modelo más barato que pueda completarla, y empieza a ejecutar.
 
-A partir de aquí, el flujo de 5 pasos se repite para cada tarea: especificar (ya está en SPEC), planificar (ya está en ROADMAP), asignar (consultar TEAM), ejecutar (la IA trabaja, registrar en PROGRESS), y auditar (si el componente lo amerita, activar TRIBUNAL).
+A partir de aquí, el flujo de 5 pasos se repite para cada fase: especificar (generar Tríada Kiro para la fase), planificar (ya está en ROADMAP), asignar (consultar TEAM), ejecutar (la IA trabaja, registrar en PROGRESS), y auditar (si el componente lo amerita, activar TRIBUNAL).
 
 `FORGE.md` no se toca — ya viene con las reglas del método y funciona tal cual.
 
@@ -158,13 +151,13 @@ No todos los pasos aplican en cada tarea. Un fix trivial puede ir directo a Ejec
 
 ### 1. Especificar
 
-Antes de que cualquier IA escriba una línea de código, debe existir una especificación clara de qué se va a construir. Esto vive en `docs/SPEC.md`.
+Antes de que cualquier IA escriba una línea de código, debe existir una especificación clara de qué se va a construir. Esto vive en `.kiro/specs/[nombre-feature]/` como la **Tríada Kiro**: `requirements.md`, `design.md` y `tasks.md`.
 
-La especificación no es un documento de arquitectura ni un manual técnico. Es una definición funcional: qué módulos tiene el sistema, qué debe hacer cada uno (requerimientos funcionales numerados como RF-XXX-01), qué reglas de negocio aplican, y qué queda explícitamente fuera del alcance (exclusiones).
+`requirements.md` define *qué* debe comportarse el sistema: User Story, requerimientos RFC 2119 (`THE System SHALL` / `SHALL NOT`), y Criterios de Aceptación GIVEN/WHEN/THEN. `design.md` define *cómo* — prescriptivo total: DDL de base de datos, políticas RLS, estructura de componentes, y **Correctness Properties** (invariantes). `tasks.md` desglosa el trabajo en tareas atómicas por fases (Infraestructura, Implementación, QA), cada una trazable a su requerimiento. La herramienta recomendada para generarlos es **[Kiro](https://kiro.dev/)**.
 
-El nivel de detalle importa. Una especificación demasiado vaga produce implementaciones que hay que re-hacer. Una demasiado detallada prescribe la solución y le quita a la IA la capacidad de proponer enfoques mejores. El punto ideal es: lo suficientemente detallada para que no haya ambigüedad sobre *qué* debe pasar, pero sin dictar *cómo* debe implementarse.
+El nivel de detalle importa. Una especificación demasiado vaga produce retrabajo. Una demasiado prescriptiva le quita a la IA la capacidad de proponer mejores enfoques. El punto ideal: suficientemente detallada para que no haya ambigüedad sobre *qué* debe pasar, sin dictar *cómo*.
 
-Las reglas irrompibles del proyecto también van en el SPEC: "nunca eliminar datos físicamente", "nunca responder con información que no venga de las fuentes", etc. Son los invariantes que ninguna implementación puede violar.
+Las reglas irrompibles del proyecto van en `requirements.md`: "nunca eliminar datos físicamente", "nunca exponer tokens en respuestas", etc. Son los invariantes que ninguna implementación puede violar.
 
 ### 2. Planificar
 
@@ -260,9 +253,21 @@ Los documentos que crecen con el tiempo — especialmente PROGRESS.md y ROADMAP.
 
 **ROADMAP.md:** Mantener solo las fases activas y las inmediatas siguientes. Las fases completadas se marcan como tales, pero si el archivo crece demasiado, las fases antiguas se pueden archivar.
 
-**SPEC.md:** Crece con el proyecto a medida que se agregan módulos, pero las IAs lo consultan por sección, no completo. SKILL.md dirige a la IA al módulo relevante para la tarea en curso.
+**.kiro/specs/:** Cada carpeta de feature contiene su propia Tríada Kiro. Las specs completadas se pueden archivar — el Maker solo necesita la Tríada del feature activo.
 
 Cada proyecto define su umbral de poda. FORGE sugiere la práctica, no prescribe números. Lo importante es que los documentos que las IAs cargan frecuentemente se mantengan dentro de un tamaño razonable.
+
+---
+
+## El Orchestrator (Extensión Opcional)
+
+Para proyectos con 4+ fases complejas o múltiples modelos de IA con diferentes capacidades, FORGE permite delegar la gestión operativa del flujo a un agente especializado — el **Orchestrator**.
+
+El Orchestrator no forma parte del flujo base de 5 pasos ni de TRIBUNAL. Opera como una capa de meta-orquestación entre el Director Humano y los agentes especializados: convierte las decisiones estratégicas del Director en especificaciones ejecutables, genera prompts de contexto para cada agente, decide cuándo activar TRIBUNAL, y administra el estado del proyecto fase a fase.
+
+Su artefacto central es la **Tríada Kiro**: por cada fase del ROADMAP, el Orchestrator genera `requirements.md` (qué SHALL construirse, con criterios BDD), `design.md` (cómo, como contrato de arquitectura), y `tasks.md` (lista atómica de tareas para el Maker). Estos tres archivos son la fuente de especificación ejecutable por fase.
+
+**[→ Ver el Orchestrator en detalle](docs/ORCHESTRATOR.md)**
 
 ---
 
@@ -326,11 +331,11 @@ No hay frecuencia obligatoria. Opciones razonables: al final de cada semana de t
 
 ### Qué te dice el resultado
 
-Si el porcentaje es alto (>85%), el proceso está funcionando bien: los modelos están bien asignados, el SPEC es claro, y las auditorías detectan problemas a tiempo.
+Si el porcentaje es alto (>85%), el proceso está funcionando bien: los modelos están bien asignados, las specs son claras, y las auditorías detectan problemas a tiempo.
 
 Si el porcentaje es bajo (<70%), algo falla y puedes diagnosticar qué:
 - ¿Las tareas que fallaron usaban un modelo barato para algo complejo? → TEAM.md necesita ajustes en la asignación.
-- ¿La IA implementó algo diferente a lo pedido? → SPEC.md tiene ambigüedades que corregir.
+- ¿La IA implementó algo diferente a lo pedido? → `requirements.md` de la fase tiene ambigüedades que corregir.
 - ¿Las auditorías detectan muchos problemas graves? → El modelo que construyó no es confiable para ese tipo de tarea.
 - ¿El Maker pasa por `blocked` frecuentemente? → O el Checker infla severidades, o el Maker no valida antes de declarar implementado.
 

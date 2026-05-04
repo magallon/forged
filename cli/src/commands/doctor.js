@@ -18,7 +18,6 @@ const { findProjectRoot } = require('../utils/fs-utils');
 // Archivos obligatorios: [ruta-relativa-al-root, tipo]
 // tipo: 'error' → ❌ si falta | 'warn' → ⚠️ si falta
 const REQUIRED_FILES = [
-  { rel: 'docs/SPEC.md',                         level: 'error', check: true },
   { rel: 'docs/TEAM.md',                         level: 'error', check: true },
   { rel: 'docs/ROADMAP.md',                      level: 'error', check: true },
   { rel: 'docs/PROGRESS.md',                     level: 'error', check: true },

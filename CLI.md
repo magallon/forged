@@ -2,7 +2,7 @@
 
 > Referencia completa de comandos del CLI de FORGE.
 > Para el método completo, ver [METHOD.md](METHOD.md).
-> Para el protocolo TRIBUNAL, ver [PROTOCOL.md](PROTOCOL.md).
+> Para el protocolo TRIBUNAL, ver [PROTOCOL.md](docs/PROTOCOL.md).
 
 ---
 
@@ -101,7 +101,6 @@ forge init
 ```
 docs/
 ├── FORGE.md
-├── SPEC.md
 ├── TEAM.md
 ├── PROGRESS.md
 ├── ROADMAP.md
@@ -142,7 +141,6 @@ Verifica que la estructura del proyecto esté completa y que los documentos clav
 
 ```bash
 forge doctor
-# ✅ SPEC.md — existe
 # ✅ TEAM.md — existe
 # ✅ ROADMAP.md — existe
 # ⚠️  AGENTS.md — no encontrado en raíz
@@ -157,7 +155,7 @@ forge doctor
 | `--strict` | Trata las advertencias (`⚠️`) como errores y retorna código `1` |
 
 **Verifica:**
-- Existencia de SPEC, TEAM, ROADMAP, PROGRESS, SKILL, AGENTS, codebase-map, TEMPLATE
+- Existencia de TEAM, ROADMAP, PROGRESS, SKILL, AGENTS, codebase-map, TEMPLATE
 - Que los documentos no contengan placeholders del tipo `{Nombre del Proyecto}`
 - Que la estructura de directorios sea correcta
 
@@ -400,7 +398,7 @@ forge ledger --watch
 # ✅ Ledger actualizado.
 ```
 
-**Integración CI/CD:** Ver ejemplo completo en [PROTOCOL.md](PROTOCOL.md#integración-cicd).
+**Integración CI/CD:** Ver ejemplo completo en [PROTOCOL.md](docs/PROTOCOL.md#integración-cicd).
 
 **Escenario típico:** Completaste o actualizaste una auditoría y quieres que el Ledger refleje el nuevo estado inmediatamente.
 

@@ -294,7 +294,7 @@ function generateReadme(reviews) {
     md += `---\n\n`;
   }
 
-  md += `*Generado automáticamente por [TRIBUNAL Protocol](./PROTOCOL.md). No editar manualmente.*\n`;
+  md += `*Generado automáticamente por [TRIBUNAL Protocol](../PROTOCOL.md). No editar manualmente.*\n`;
 
   return md;
 }

@@ -8,7 +8,7 @@
 
 ## ¿Qué es TRIBUNAL?
 
-**TRIBUNAL** es el módulo de Quality Assurance de [FORGE](../README.md). Es un framework agnóstico de control de calidad inter-agentes para repositorios de código. Rompe la cámara de eco donde una sola IA programa y audita simultáneamente, reemplazándola con un sistema de roles independientes donde ningún agente evalúa su propio trabajo.
+**TRIBUNAL** es el módulo de Quality Assurance de [FORGE](FORGE.md). Es un framework agnóstico de control de calidad inter-agentes para repositorios de código. Rompe la cámara de eco donde una sola IA programa y audita simultáneamente, reemplazándola con un sistema de roles independientes donde ningún agente evalúa su propio trabajo.
 
 ## El Problema
 
@@ -153,6 +153,7 @@ mi-proyecto/
 ├── AGENTS.md                        # Reglas de código del proyecto (lo crea el usuario)
 ├── docs/
 │   ├── FORGE.md                     # Manifiesto del método
+│   ├── PROTOCOL.md                  # Este archivo — protocolo TRIBUNAL completo
 │   ├── TEAM.md                      # Catálogo de agentes IA
 │   ├── PROGRESS.md                  # Diario del proyecto
 │   ├── ROADMAP.md                   # Plan de hitos

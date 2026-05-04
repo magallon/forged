@@ -31,7 +31,7 @@ FORGE opera en 5 pasos. No todos aplican en cada tarea — un fix trivial no nec
 │  Definir qué │     │ Descomponer  │     │ Elegir el    │     │ La IA trabaja│     │ TRIBUNAL:    │
 │  se construye│     │ en fases con │     │ modelo más   │     │ el humano    │     │ otra IA      │
 │  sin ambigüe-│     │ orden y      │     │ barato que   │     │ supervisa y  │     │ revisa el    │
-│  dad (SPEC)  │     │ dependencias │     │ pueda hacerlo│     │ registra     │     │ código       │
+│  dad (Kiro)  │     │ dependencias │     │ pueda hacerlo│     │ registra     │     │ código       │
 │              │     │ (ROADMAP)    │     │ (TEAM)       │     │ (PROGRESS)   │     │ (si aplica)  │
 └──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
 ```
@@ -73,7 +73,7 @@ ln -s /ruta/mi-proyecto/docs/skill /mnt/skills/user/mi-proyecto
 mklink /D C:\Users\tu-usuario\.skills\mi-proyecto C:\ruta\mi-proyecto\docs\skill
 ```
 
-Luego llena los documentos en `docs/` con la información de tu proyecto: tu especificación en SPEC.md, tu equipo de modelos en TEAM.md, tu plan en ROADMAP.md, y las reglas de tu proyecto en skill/SKILL.md.
+Luego llena los documentos en `docs/` con la información de tu proyecto: tu equipo de modelos en TEAM.md, tu plan de fases en ROADMAP.md, y las reglas de tu proyecto en skill/SKILL.md. Para cada fase, genera la Tríada Kiro (`requirements.md` + `design.md` + `tasks.md`) con **[Kiro](https://kiro.dev/)** antes de ejecutar.
 
 **Prompt de arranque** (para entornos sin auto-descubrimiento de skills):
 
@@ -94,7 +94,6 @@ Dime qué necesitas para empezar.
 forged/                              ← Este repositorio
 ├── project/                         # Templates que forge init copia al proyecto
 │   ├── FORGE.md
-│   ├── SPEC.md
 │   ├── TEAM.md
 │   ├── PROGRESS.md
 │   ├── ROADMAP.md
@@ -114,6 +113,7 @@ forged/                              ← Este repositorio
 │       └── update-reviews.js        # Genera el Ledger sin necesidad de instalar el CLI
 ├── docs/
 │   ├── PROTOCOL.md                  # Protocolo TRIBUNAL completo
+│   ├── ORCHESTRATOR.md              # El Orchestrator — rol de orquestación (extensión opcional)
 │   ├── PROGRESS.md                  # Bitácora de desarrollo del propio repo FORGE
 │   └── skill/
 │       └── references/
@@ -129,13 +129,19 @@ forged/                              ← Este repositorio
 
 ## Estructura del Proyecto (después de instalar)
 
-Después de `forge init`, tu proyecto queda así:
+Después de `forge init` y generar las specs con Kiro, tu proyecto queda así:
 
 ```
 mi-proyecto/
+├── .kiro/
+│   └── specs/                       # Tríada Kiro por feature (Kiro genera)
+│       └── n1-00-[feature]/
+│           ├── .config.kiro         # { specId, workflowType, specType }
+│           ├── requirements.md      # User Story + RFC 2119 + criterios BDD
+│           ├── design.md            # DDL, RLS, componentes, invariantes
+│           └── tasks.md             # tareas atómicas por fases con trazabilidad
 ├── docs/
 │   ├── FORGE.md                     # Manifiesto del método
-│   ├── SPEC.md                      # Especificación de requerimientos
 │   ├── TEAM.md                      # Catálogo de agentes IA + costos
 │   ├── PROGRESS.md                  # Diario del proyecto + métricas
 │   ├── ROADMAP.md                   # Plan de hitos y prioridades
@@ -164,8 +170,8 @@ mi-proyecto/
 
 | Documento | Propósito |
 |:----------|:----------|
+| **.kiro/specs/** | Especificaciones ejecutables por feature. Cada carpeta `n<nivel>-<secuencia>-<slug>` contiene la Tríada Kiro: `requirements.md` (User Story + RFC 2119 + criterios BDD), `design.md` (prescriptivo: DDL exacto, RLS, estructura de componentes, invariantes), y `tasks.md` (tareas atómicas por fases con trazabilidad `_Requirements: X.X_`). Generada con Kiro o por el Orchestrator. |
 | **FORGE.md** | Manifiesto del método. Declara que el proyecto usa FORGE, resume los principios, el flujo operativo y las reglas de TRIBUNAL. |
-| **SPEC.md** | Especificación de requerimientos. Define qué se construye, módulo por módulo, con requerimientos funcionales numerados, reglas de negocio y exclusiones. |
 | **TEAM.md** | Catálogo de agentes IA. Documenta fortalezas, limitaciones, costos de cada modelo y la regla de asignación por costo mínimo. Incluye comparativa de costos IA vs humano. |
 | **PROGRESS.md** | Diario del proyecto. Registro cronológico de sesiones de trabajo, decisiones técnicas, referencias cruzadas a auditorías, y revisiones periódicas de la métrica de retrabajo. |
 | **ROADMAP.md** | Plan de hitos. Qué falta por construir, en qué orden, con qué dependencias y prioridades. Las features futuras van aquí como fases de baja prioridad. |
@@ -179,7 +185,7 @@ mi-proyecto/
 
 ## Principios Fundamentales
 
-1. **Spec antes que código.** Ninguna IA empieza a trabajar sin una especificación clara de qué construir.
+1. **Spec antes que código.** Ninguna IA empieza a trabajar sin una Tríada Kiro aprobada que defina exactamente qué, cómo y en qué pasos se construye el feature.
 2. **El modelo correcto para la tarea correcta.** Siempre asignar al modelo de menor costo que pueda completar la tarea satisfactoriamente.
 3. **Ningún agente juzga su propio trabajo.** La revisión de código la hace un agente diferente al que lo escribió.
 4. **Todo queda en la bitácora.** Cada decisión, cambio, rechazo y validación se documenta.
@@ -202,6 +208,18 @@ El **Judge** (Juez) no forma parte del flujo diario. Se ejecuta cada 5–10 audi
 **Flujo de estados:** `draft → audited → validated | blocked → reviewed`
 
 **[→ Ver TRIBUNAL en detalle](docs/PROTOCOL.md)**
+
+---
+
+## El Orchestrator (Extensión Opcional)
+
+Para proyectos con múltiples features y equipos de agentes, FORGE incluye el rol de **Orchestrator** — una capa de meta-orquestación entre el Director Humano y los agentes de implementación y auditoría.
+
+El Orchestrator convierte las decisiones estratégicas del Director en especificaciones ejecutables: genera la Tríada Kiro por feature, produce los prompts de contexto para cada sesión de agente, decide cuándo activar TRIBUNAL, y administra el estado del proyecto de feature en feature. No codifica, no audita — orquesta.
+
+No es parte del flujo base ni de TRIBUNAL. Proyectos simples no lo necesitan.
+
+**[→ Ver el Orchestrator en detalle](docs/ORCHESTRATOR.md)**
 
 ---
 
@@ -229,7 +247,7 @@ No es necesario para scripts rápidos, proyectos triviales de un solo archivo, o
 
 ## Métrica
 
-FORGE sugiere una sola métrica: **porcentaje de tareas que pasan sin retrabajo**. Se calcula desde dos fuentes: el Ledger de TRIBUNAL (auditorías `validated` a la primera vs las que pasaron por `blocked`) y PROGRESS.md (fases completadas sin necesidad de rehacerlas). Un porcentaje alto indica que los modelos están bien asignados, el SPEC es claro y el proceso de auditoría funciona. Un porcentaje bajo señala dónde ajustar: asignación de modelos, claridad del spec o rigor de validación. Se registra periódicamente en PROGRESS.md.
+FORGE sugiere una sola métrica: **porcentaje de tareas que pasan sin retrabajo**. Se calcula desde dos fuentes: el Ledger de TRIBUNAL (auditorías `validated` a la primera vs las que pasaron por `blocked`) y PROGRESS.md (features completados sin necesidad de rehacerlos). Un porcentaje alto indica que los modelos están bien asignados, las specs son claras y el proceso de auditoría funciona. Un porcentaje bajo señala dónde ajustar: asignación de modelos, calidad de las specs o rigor de validación. Se registra periódicamente en PROGRESS.md.
 
 Con el CLI instalado, `forge status` calcula y muestra la tasa combinada directamente.
 
